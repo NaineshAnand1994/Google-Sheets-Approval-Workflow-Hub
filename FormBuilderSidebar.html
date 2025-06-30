@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial, sans-serif; padding: 10px; }
+      .step { display: none; }
+      .active { display: block; }
+      label { font-weight: bold; display: block; margin-top: 10px; }
+      input, select, button, textarea { width: 100%; margin-top: 5px; }
+      .question-list { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; }
+      .question-item { border: 1px solid #ccc; padding: 5px; margin-bottom: 5px; }
+      .buttons { margin-top: 15px; text-align: right; }
+    </style>
+  </head>
+  <body>
+    <h2>🛠️ Setup Approval Form Wizard</h2>
+
+    <div id="step1" class="step active">
+      <label>Select Approval Type</label>
+      <select id="approvalType">
+        <option value="">--Choose--</option>
+        <option value="LeaveRequest">Leave Request</option>
+        <option value="ExpenseClaim">Expense Claim</option>
+        <option value="PurchaseApproval">Purchase Approval</option>
+        <option value="DocumentSignOff">Document Sign-off</option>
+      </select>
+      <div class="buttons">
+        <button onclick="nextStep(2)">Next</button>
+      </div>
+    </div>
+
+    <div id="step2" class="step">
+      <label>Form Name</label>
+      <input type="text" id="formName" placeholder="e.g. Leave Request Form">
+      <div class="buttons">
+        <button onclick="backStep(1)">Back</button>
+        <button onclick="nextStep(3)">Next</button>
+      </div>
+    </div>
+
+    <div id="step3" class="step">
+      <label>Drive Folder ID (optional)</label>
+      <input type="text" id="folderId" placeholder="Leave blank for My Drive">
+      <div class="buttons">
+        <button onclick="backStep(2)">Back</button>
+        <button onclick="nextStep(4)">Next</button>
+      </div>
+    </div>
+
+    <div id="step4" class="step">
+      <label>Add Questions</label>
+      <input type="text" id="qTitle" placeholder="Question Title">
+      <select id="qType">
+        <option value="ShortAnswer">Short Answer</option>
+        <option value="Paragraph">Paragraph</option>
+        <option value="MultipleChoice">Multiple Choice</option>
+      </select>
+      <label>Required?</label>
+      <select id="qRequired">
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
+      <label>Choices (comma separated, only for Multiple Choice)</label>
+      <textarea id="qChoices" placeholder="Choice1, Choice2"></textarea>
+      <button onclick="addQuestion()">Add Question</button>
+
+      <div class="question-list" id="questionList"></div>
+
+      <div class="buttons">
+        <button onclick="backStep(3)">Back</button>
+        <button onclick="nextStep(5)">Review</button>
+      </div>
+    </div>
+
+    <div id="step5" class="step">
+      <h3>✅ Review</h3>
+      <div id="reviewContent"></div>
+      <div class="buttons">
+        <button onclick="backStep(4)">Back</button>
+        <button onclick="submitForm()">Create Form</button>
+      </div>
+    </div>
+
+    <div id="step6" class="step">
+      <h3>🎉 Success!</h3>
+      <p id="successMessage"></p>
+      <div class="buttons">
+        <button onclick="google.script.host.close()">Close</button>
+      </div>
+    </div>
+
+    <script>
+      let currentStep = 1;
+      let questions = [];
+
+      function nextStep(step) {
+        if (validateStep(currentStep)) {
+          document.getElementById('step' + currentStep).classList.remove('active');
+          currentStep = step;
+          if (currentStep === 5) renderReview();
+          document.getElementById('step' + currentStep).classList.add('active');
+        }
+      }
+
+      function backStep(step) {
+        document.getElementById('step' + currentStep).classList.remove('active');
+        currentStep = step;
+        document.getElementById('step' + currentStep).classList.add('active');
+      }
+
+      function validateStep(step) {
+        if (step === 1 && !document.getElementById('approvalType').value) {
+          alert('Please select an approval type.');
+          return false;
+        }
+        if (step === 2 && !document.getElementById('formName').value.trim()) {
+          alert('Please enter a form name.');
+          return false;
+        }
+        return true;
+      }
+
+      function addQuestion() {
+        const title = document.getElementById('qTitle').value.trim();
+        const type = document.getElementById('qType').value;
+        const required = document.getElementById('qRequired').value === 'true';
+        const choices = document.getElementById('qChoices').value.trim().split(',').map(s => s.trim()).filter(s => s);
+
+        if (!title) {
+          alert('Enter question title.');
+          return;
+        }
+        const question = { title, type, required };
+        if (type === 'MultipleChoice') question.choices = choices;
+        questions.push(question);
+        renderQuestions();
+        document.getElementById('qTitle').value = '';
+        document.getElementById('qChoices').value = '';
+      }
+
+      function renderQuestions() {
+        const list = document.getElementById('questionList');
+        list.innerHTML = '';
+        questions.forEach((q, i) => {
+          list.innerHTML += `<div class="question-item">
+            <strong>${i + 1}. ${q.title}</strong> [${q.type}] Required: ${q.required ? 'Yes' : 'No'}
+            ${q.choices ? `<br>Choices: ${q.choices.join(', ')}` : ''}
+          </div>`;
+        });
+      }
+
+      function renderReview() {
+        const type = document.getElementById('approvalType').value;
+        const formName = document.getElementById('formName').value;
+        const folderId = document.getElementById('folderId').value;
+
+        let html = `<p><strong>Approval Type:</strong> ${type}</p>`;
+        html += `<p><strong>Form Name:</strong> ${formName}</p>`;
+        html += `<p><strong>Folder ID:</strong> ${folderId || 'My Drive'}</p>`;
+        html += `<h4>Questions:</h4>`;
+        questions.forEach((q, i) => {
+          html += `<p>${i + 1}. <strong>${q.title}</strong> [${q.type}] Required: ${q.required ? 'Yes' : 'No'}`;
+          if (q.choices) html += `<br>Choices: ${q.choices.join(', ')}`;
+          html += `</p>`;
+        });
+        document.getElementById('reviewContent').innerHTML = html;
+      }
+
+      function submitForm() {
+        const config = {
+          approvalType: document.getElementById('approvalType').value,
+          formName: document.getElementById('formName').value,
+          folderId: document.getElementById('folderId').value,
+          questions
+        };
+        google.script.run.withSuccessHandler((res) => {
+          document.getElementById('step5').classList.remove('active');
+          document.getElementById('step6').classList.add('active');
+          document.getElementById('successMessage').innerHTML = `Form created successfully! <br><a href="${res.url}" target="_blank">${res.url}</a>`;
+        }).createApprovalFormInteractive(config);
+      }
+    </script>
+  </body>
+</html>
