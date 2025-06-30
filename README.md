@@ -1,59 +1,84 @@
-# ✅ Google Sheets Approval Workflow Hub (Google Apps Script)
+# ✅ Google Sheets Approval Workflow Hub + Dynamic Form Builder (Google Apps Script)
 
-A Google Apps Script-powered Google Sheets Add-on that automates **multiple types of approval workflows** for any team—all in one place.
+An **advanced Google Apps Script-powered Google Sheets Add-on** that automates **approval workflows** *and* lets you **design your approval Google Forms dynamically, right inside the Sheet**.
 
 ⭐ Supports **Leave Requests, Expense Claims, Purchase Approvals, and Document Sign-offs**  
-⭐ Lets users submit requests **via Google Forms** OR **via an interactive in-Sheet form**  
-⭐ Automatically emails approvers for review  
-⭐ Updates approval status in Google Sheets  
-⭐ Logs all actions for auditing
+⭐ Admins can **create, customize, and link** Google Forms with an **interactive step-by-step wizard**  
+⭐ Auto-emails approvers with Approve/Reject links *(placeholder-ready for web app integration)*  
+⭐ Tracks approvals in Google Sheets  
+⭐ Logs all actions for auditing  
 
 ---
 
 ## 🚀 Features
 
 ✅ One-stop approval hub in Google Sheets  
+✅ Built-in **Approval Form Builder**—no manual Forms setup needed  
 ✅ Handles multiple approval types:
 - Leave Requests
 - Expense Claims
 - Purchase Approvals
-- Document Sign-offs  
+- Document Sign-offs
 
 ✅ Two submission modes for each type:
-- **Google Form Link**: for external/remote users
-- **Interactive in-Sheet Form**: for direct spreadsheet use
+- **Google Form Link** (for remote users)
+- **Interactive in-Sheet Form** (for direct spreadsheet use)
+
+✅ Admin-friendly Form Builder wizard:
+- Lets HR/managers *create and customize Google Forms* step by step  
+- Define form name, storage folder, and questions interactively  
+- Stores Form links and questions automatically in the Settings tab  
+- Supports regenerating Forms if deleted  
 
 ✅ Auto-assigns approvers based on Settings  
-✅ Sends approval request emails with Approve/Reject links (placeholder-ready)  
+✅ Sends approval request emails with Approve/Reject links *(placeholders ready for future web app integration)*  
 ✅ Updates status in Google Sheets tabs  
 ✅ Notifies requester of decision  
-✅ Maintains a complete Logs tab
+✅ Maintains a complete Logs tab  
 
 ---
 
 ## ⚙️ How It Works
 
-- User opens the Google Sheet
-- Chooses from a custom menu:
-  - Submit Leave Request (Interactive)
-  - Open Leave Request Form
-  - Submit Expense Claim (Interactive)
-  - Open Expense Claim Form
-  - etc.
-- Interactive mode: guided questions in prompts (upgradable to sidebar)
-- Form mode: opens the actual Google Form
-- All submissions land in structured tabs in the Sheet
-- Script emails approver with Approve/Reject links (placeholder for Web App integration)
-- Approver's action updates status in Sheet
-- Notifies requester of decision
-- Logs all actions in a Logs tab
+1️⃣ Admin clicks **Setup Approval Forms** in the custom menu.  
+2️⃣ The **Form Builder Wizard** opens in a sidebar:  
+   - Select approval type (Leave / Expense / Purchase / Document)  
+   - Enter custom form name  
+   - Choose Drive folder to save form (optional)  
+   - Add questions one by one (title, type, required)  
+   - Review and confirm  
+
+3️⃣ Script creates Google Form via Apps Script:  
+   - Adds questions exactly as defined  
+   - Saves form in chosen Drive folder  
+   - Gets Form URL  
+
+4️⃣ Script automatically writes details to **Settings** tab:
+   - Form URL
+   - JSON of questions
+   - Folder ID  
+
+5️⃣ Employees submit requests via:
+   - Google Form (remote-friendly)
+   - Interactive in-Sheet form (via menu)  
+
+6️⃣ Script writes submissions to dedicated tabs:
+   - LeaveRequests
+   - ExpenseClaims
+   - PurchaseApprovals
+   - DocumentSignOffs
+
+7️⃣ Emails approver with approval request and Approve/Reject links *(future Web App integration possible)*.  
+8️⃣ Approver's action updates status in Sheet.  
+9️⃣ Requester notified of decision.  
+10️⃣ Logs tab tracks all activity.
 
 ---
 
 ## 🗂️ 📌 Example Google Sheets Tabs
 
 ✅ **Settings**  
-Controls all approvers, form links, and email templates.
+Stores all approver emails, Google Form links, question definitions, Drive folder IDs, and email templates.
 
 ✅ **LeaveRequests**  
 Stores leave request submissions.
@@ -62,104 +87,113 @@ Stores leave request submissions.
 Stores expense claims.
 
 ✅ **PurchaseApprovals**  
-Stores purchase requests.
+Stores purchase approvals.
 
 ✅ **DocumentSignOffs**  
-Stores document sign-off requests.
+Stores document sign-offs.
 
 ✅ **Logs**  
-Tracks all submissions and approvals for auditing.
+Tracks all submissions, approvals, rejections for auditing.
 
 ---
 
 ## 📌 Example Settings Tab
 
-| Parameter                           | Value                                     |
-|--------------------------------------|-------------------------------------------|
-| AdminEmail                          | hr@company.com                           |
-| LeaveApproverEmail                  | manager1@company.com                     |
-| ExpenseApproverEmail                | finance@company.com                      |
-| PurchaseApproverEmail               | procurement@company.com                  |
-| DocumentApproverEmail               | legal@company.com                        |
-| LeaveRequestFormURL                 | https://forms.gle/leaveFormLink          |
-| ExpenseClaimFormURL                 | https://forms.gle/expenseFormLink        |
-| PurchaseApprovalFormURL             | https://forms.gle/purchaseFormLink       |
-| DocumentSignOffFormURL              | https://forms.gle/documentFormLink       |
-| ApprovalEmailSubject                | Approval Needed: {{Type}} Request        |
-| ApprovalEmailBodyTemplate           | Hello {{Approver}}, please review {{Type}} for {{Employee}}. Click Approve or Reject. |
+| Parameter                             | Value                                      |
+|----------------------------------------|--------------------------------------------|
+| AdminEmail                            | hr@company.com                            |
+| LeaveApproverEmail                    | manager1@company.com                      |
+| ExpenseApproverEmail                  | finance@company.com                       |
+| PurchaseApproverEmail                 | procurement@company.com                   |
+| DocumentApproverEmail                 | legal@company.com                         |
+| LeaveRequestFormURL                   | https://forms.gle/...                     |
+| ExpenseClaimFormURL                   | https://forms.gle/...                     |
+| PurchaseApprovalFormURL               | https://forms.gle/...                     |
+| DocumentSignOffFormURL                | https://forms.gle/...                     |
+| LeaveRequestFormQuestions             | JSON describing questions                 |
+| ExpenseClaimFormQuestions             | JSON describing questions                 |
+| PurchaseApprovalFormQuestions         | JSON describing questions                 |
+| DocumentSignOffFormQuestions          | JSON describing questions                 |
+| LeaveRequestFormFolderID              | Drive Folder ID (optional)                |
+| ...                                   | (same pattern for other approval types)   |
+| ApprovalEmailSubject                  | Approval Needed: {{Type}} Request         |
+| ApprovalEmailBodyTemplate             | Hello {{Approver}}, please review {{Type}} for {{Employee}}. Click Approve or Reject. |
 
-✅ This tab is fully editable by HR/admin without touching code.
+✅ All stored and editable in the **Settings** tab.
 
 ---
 
 ## 📌 Required Sheet Columns for Each Request Type
 
-Below are the **required columns** you should create in your Google Sheet for each approval type.  
-These match the fields the **interactive prompts** will ask for *and* what you should include in the linked **Google Forms**.  
+Below are the **required columns** for each approval type tab.  
+
+These columns will match:
+✅ Interactive in-Sheet form prompts  
+✅ Dynamically generated Google Form fields
 
 ---
 
 ### ✅ **LeaveRequests Tab**
 
-| Column         | Example Value             | Description                                |
-|-----------------|--------------------------|--------------------------------------------|
-| EmployeeName    | Alice                     | Name of the employee making the request   |
-| Dates           | 2024-07-01 to 2024-07-05 | Leave period requested                     |
-| Reason          | Vacation                  | Reason for leave                           |
-| Status          | Pending                   | Approval status (Pending/Approved/Rejected) |
-| Approver        | manager1@company.com      | Email of assigned approver                |
-| Comments        |                           | Optional comments by approver             |
+| Column         | Description                                |
+|-----------------|--------------------------------------------|
+| EmployeeName    | Name of the employee making the request   |
+| Dates           | Leave period requested                    |
+| Reason          | Reason for leave                          |
+| Status          | Pending / Approved / Rejected             |
+| Approver        | Email of the assigned approver            |
+| Comments        | Optional approver comments                |
 
 ---
 
 ### ✅ **ExpenseClaims Tab**
 
-| Column         | Example Value             | Description                                |
-|-----------------|--------------------------|--------------------------------------------|
-| EmployeeName    | Bob                       | Name of the employee making the claim     |
-| Amount          | 250                       | Amount being claimed                      |
-| Description     | Travel expenses          | Description of the expense                |
-| Status          | Pending                   | Approval status                            |
-| Approver        | finance@company.com       | Email of assigned approver                |
-| Comments        |                           | Optional comments by approver             |
+| Column         | Description                                |
+|-----------------|--------------------------------------------|
+| EmployeeName    | Name of the employee making the claim     |
+| Amount          | Amount being claimed                      |
+| Description     | Description of the expense                |
+| Status          | Approval status                           |
+| Approver        | Email of the assigned approver            |
+| Comments        | Optional approver comments                |
 
 ---
 
 ### ✅ **PurchaseApprovals Tab**
 
-| Column         | Example Value             | Description                                |
-|-----------------|--------------------------|--------------------------------------------|
-| EmployeeName    | Carol                     | Name of requester                          |
-| Item/Service    | Laptop                    | Item or service to purchase                |
-| Amount          | 1200                      | Cost estimate                              |
-| Reason          | New hire equipment       | Justification for purchase                 |
-| Status          | Pending                   | Approval status                            |
-| Approver        | procurement@company.com   | Email of assigned approver                |
-| Comments        |                           | Approver's comments                        |
+| Column         | Description                                |
+|-----------------|--------------------------------------------|
+| EmployeeName    | Name of requester                         |
+| Item/Service    | Item or service to purchase               |
+| Amount          | Cost estimate                             |
+| Reason          | Justification for purchase                |
+| Status          | Approval status                           |
+| Approver        | Email of assigned approver                |
+| Comments        | Optional approver comments                |
 
 ---
 
 ### ✅ **DocumentSignOffs Tab**
 
-| Column         | Example Value             | Description                                |
-|-----------------|--------------------------|--------------------------------------------|
-| EmployeeName    | David                     | Person requesting sign-off                |
-| DocumentName    | NDA Agreement            | Name of the document                      |
-| Reason          | Vendor onboarding        | Purpose for sign-off                      |
-| Status          | Pending                   | Approval status                            |
-| Approver        | legal@company.com         | Email of assigned approver                |
-| Comments        |                           | Approver's comments                        |
+| Column         | Description                                |
+|-----------------|--------------------------------------------|
+| EmployeeName    | Person requesting sign-off                |
+| DocumentName    | Name of the document                      |
+| Reason          | Purpose for sign-off                      |
+| Status          | Approval status                           |
+| Approver        | Email of assigned approver                |
+| Comments        | Approver's comments                       |
 
 ---
 
 ✅ **Tip:**  
-> Make sure your **Google Forms** ask for these same fields so both submission methods (Forms + Interactive prompts) match perfectly!
+> The **interactive form builder wizard** ensures your Google Forms always match these columns automatically!
 
 ---
 
 ## 🛠️ Setup Instructions
 
-1️⃣ Make a Google Sheet with these tabs:
+1️⃣ Create a Google Sheet with these tabs:
 - Settings
 - LeaveRequests
 - ExpenseClaims
@@ -167,19 +201,21 @@ These match the fields the **interactive prompts** will ask for *and* what you s
 - DocumentSignOffs
 - Logs
 
-2️⃣ Fill in the **Settings** tab exactly as shown above.
-
-3️⃣ Add your Google Form links for each type.
-
-4️⃣ Open **Apps Script Editor**:
+2️⃣ Open **Apps Script Editor**:
 - Paste the code from `Code.gs`.
 - Link it to your Google Sheet.
 
-5️⃣ Save and authorize the script.
+3️⃣ Save and authorize the script.
 
-6️⃣ Refresh your Google Sheet to see the **Approvals Menu**.
+4️⃣ Refresh your Sheet to see the **Approvals Menu**.
 
-7️⃣ Click any menu item to submit a request or open a form.
+5️⃣ Click **Setup Approval Forms** to design and generate Google Forms for each request type, step by step!
+
+6️⃣ Employees can then submit requests via:
+- Interactive in-Sheet form
+- Google Form links
+
+7️⃣ All approvals and status updates are logged in the **Logs** tab.
 
 ---
 
@@ -189,7 +225,7 @@ These match the fields the **interactive prompts** will ask for *and* what you s
 ✅ Finance expense approvals  
 ✅ Procurement purchase requests  
 ✅ Legal document sign-offs  
-✅ Any manager-employee workflow
+✅ Any manager-employee workflow with standardized approvals
 
 ---
 
